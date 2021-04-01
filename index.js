@@ -27,10 +27,25 @@ client.connect(err => {
   app.post('/addProduct',(req, res)=> {
     const newProduct =req.body;
     VengariCollection.insertOne(newProduct)
-    
+
     .then(result => {
       console.log('inserted ', result.insertedCount)
       res.send(res.insertedCount > 0)
+    })
+  })
+
+
+  app.get('/products', (req, res) => {
+    VengariCollection.find()
+    .toArray((err, items) => {
+      res.send(items);
+    })
+  })
+
+  app.delete('/delete/:id' , (req, res)=> {
+    VengariCollection.deleteOne({_id: ObjectID(req.params.id)})
+    .then((result) =>{
+      console.log(result);
     })
   })
 
