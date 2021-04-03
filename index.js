@@ -22,6 +22,7 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
   const VengariCollection = client.db("vengari").collection("products");
+  const OrderInfo = client.db("vengari").collection("orderinfo");
  
 
   app.post('/addProduct',(req, res)=> {
@@ -48,6 +49,23 @@ client.connect(err => {
       console.log(result);
     })
   })
+
+  app.post('/order', (req, res) =>{
+    const newOrder = req.body;
+    OrderInfo.insertOne(newOrder)
+    .then(result => {
+      console.log('info added', result.insertedCount);
+      res.send(res.insertedCount > 0)
+    })
+  })
+
+  app.get('/orderinfo', (req, res) =>{
+    OrderInfo.find()
+    .toArray((err, doc) =>{
+      res.send(doc);
+    })
+  })
+
 
 });
 
